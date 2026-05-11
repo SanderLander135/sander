@@ -1,35 +1,35 @@
-import os
-import sys
-import random
+#!/usr/bin/env python3
 
-def task_01():
-    os.system('cls' if os.name == 'nt' else 'clear')
+# Impordime vajalikud moodulid
+import random  # juhusliku valiku tegemiseks
+import os      # faili olemasolu kontrollimiseks
+import sys     # programmist väljumiseks vea korral
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    source_file = os.path.join(script_dir, "extensions.txt")
-    output_file = "random.txt"
+# Määrame failide asukohad (samasse kausta skriptiga)
+SKRIPTI_KAUST = os.path.dirname(os.path.abspath(__file__))
+LAIENDITE_FAIL = os.path.join(SKRIPTI_KAUST, "laiendid.txt")
+RANDOM_FAIL = os.path.join(SKRIPTI_KAUST, "random.txt")
 
-    count = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+# Kontrollime, kas laiendite fail on olemas
+if not os.path.isfile(LAIENDITE_FAIL):
+    print(f"Viga: fail {LAIENDITE_FAIL} ei leitud!")
+    sys.exit(1)
 
-    if os.path.exists(source_file):
-        with open(source_file, 'r') as f:
-            extensions = f.read().splitlines()
+# Loeme kõik laiendid failist, eemaldame tühjad read
+with open(LAIENDITE_FAIL, "r") as f:
+    laiendid = [rida.strip() for rida in f.readlines() if rida.strip()]
 
-        if not extensions:
-            print(f"Error: '{source_file}' is empty.")
-            sys.exit(1)
+# Kontrollime, et failis on vähemalt üks laiend
+if not laiendid:
+    print("Viga: laiendid.txt on tühi!")
+    sys.exit(1)
 
-        print(f"Adding {count} random extensions to file '{output_file}'...")
-        
-        with open(output_file, 'a') as f_out:
-            for _ in range(count):
-                random_ext = random.choice(extensions)
-                f_out.write(random_ext + "\n")
-        
-        print("Done")
-    else:
-        print(f"Error: File '{source_file}' not found.")
-        sys.exit(1)
+# Valime juhusliku laiendi nimekirjast
+laiend = random.choice(laiendid)
 
-if __name__ == "__main__":
-    task_01()
+# Kirjutame valitud laiendi random.txt faili (lisame lõppu)
+with open(RANDOM_FAIL, "a") as f:
+    f.write(laiend + "\n")
+
+# Kuvame kasutajale teate lisatud laiendi kohta
+print(f"Lisatud: {laiend}")

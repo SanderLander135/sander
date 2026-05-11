@@ -1,29 +1,35 @@
-import os
-import sys
+#!/usr/bin/env python3
 
-def task_02():
+# Impordime vajalikud moodulid
+import sys  # käsurea argumentide lugemiseks ja väljumiseks
+import os   # faili olemasolu kontrollimiseks
 
-    os.system('cls' if os.name == 'nt' else 'clear')
+# Kontrollime, kas kasutaja andis laiendi kaasa käsureal
+if len(sys.argv) < 2:
+    print("Viga: anna laiend kaasa! Näide: python3 task_02.py .txt")
+    sys.exit(1)
 
-    if len(sys.argv) < 2:
-        print(f"Error: Extension not provided! Usage: python {sys.argv[0]} <extension>")
-        sys.exit(1)
+# Võtame laiendi esimesest käsurea argumendist
+laiend = sys.argv[1]
 
-    extension = sys.argv[1]
-    file_name = "random.txt"
+# Määrame random.txt faili asukoha (samasse kausta skriptiga)
+SKRIPTI_KAUST = os.path.dirname(os.path.abspath(__file__))
+RANDOM_FAIL = os.path.join(SKRIPTI_KAUST, "random.txt")
 
-    if not os.path.exists(file_name):
-        print(f"Error: File '{file_name}' not found! Run task_01.py first.")
-        sys.exit(1)
+# Kontrollime, kas random.txt fail on olemas
+if not os.path.isfile(RANDOM_FAIL):
+    print(f"Viga: fail {RANDOM_FAIL} ei leitud!")
+    sys.exit(1)
 
-    with open(file_name, 'r') as f:
-        lines = f.read().splitlines()
-        amount = lines.count(extension)
+# Loeme kõik read failist ja loendame täpsed vasted
+with open(RANDOM_FAIL, "r") as f:
+    read = f.readlines()
 
-    if amount > 0:
-        print(f"Extension '{extension}' was found in file '{file_name}': {amount} times.")
-    else:
-        print(f"Extension '{extension}' was not found in file '{file_name}'.")
+# Loendame, mitu korda esineb täpselt otsitav laiend (rea kaupa)
+kogus = sum(1 for rida in read if rida.strip() == laiend)
 
-if __name__ == "__main__":
-    task_02()
+# Kuvame tulemuse vastavalt sellele, kas laiendit leiti või mitte
+if kogus == 0:
+    print(f"Laiendit {laiend} ei leitud random.txt failist!")
+else:
+    print(f"Laiend {laiend} esines {kogus} korda random.txt failist!")
